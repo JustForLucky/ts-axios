@@ -1,0 +1,9 @@
+html, body, a {
+  color: #333333;
+}
+a, a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
+}
+a:hover {
+  color: burlywood;
+}
