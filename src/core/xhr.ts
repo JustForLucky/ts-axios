@@ -4,7 +4,7 @@ import { AxiosRequestConfig, AxiosResponse, AxiosPromise } from '../types'
 import { create } from 'domain'
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { url, data = null, method = 'get', headers, responseType, timeout } = config
+    const { url, data = null, method = 'get', headers, responseType, timeout, cancelToken } = config
 
     const request = new XMLHttpRequest()
     /** 设置 */
@@ -55,6 +55,13 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         request.setRequestHeader(name, headers[name])
       }
     })
+
+    if (cancelToken) {
+      cancelToken.promise.then(reason => {
+        request.abort()
+        reject(reason)
+      })
+    }
 
     request.send(data)
 
