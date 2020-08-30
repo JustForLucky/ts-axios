@@ -1,10 +1,13 @@
 const chalk = require('chalk')
 const express = require('express')
 const bodyParse = require('body-parser')
+const cookieParser = require('cookie-parser')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+
+require('./server2')
 
 const app = express()
 const compiler = webpack(WebpackConfig)
@@ -25,6 +28,8 @@ app.use(bodyParse.json())
 
 app.use(bodyParse.urlencoded({ extended: true }))
 
+app.use(cookieParser())
+
 const router = express.Router()
 
 registerSimpleRouter()
@@ -34,6 +39,7 @@ registerExtendRouter()
 registerInterceptorRouter()
 registerConfigRouter()
 registerCancelRouter()
+registerMoreRouter()
 
 app.use(router)
 
@@ -151,5 +157,11 @@ function registerCancelRouter() {
     setTimeout(() => {
       res.json(req.body)
     }, 1000)
+  })
+}
+
+function registerMoreRouter() {
+  router.get('/more/get', (req, res) => {
+    res.json(req.cookies)
   })
 }

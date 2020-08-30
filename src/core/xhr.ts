@@ -1,10 +1,18 @@
 import { parseHeaders } from '../helpers/headers'
 import { createError } from '../helpers/error'
 import { AxiosRequestConfig, AxiosResponse, AxiosPromise } from '../types'
-import { create } from 'domain'
+import { isURLSameOrigin } from '../helpers/url'
+import Cookie from '../helpers/cookie'
+
+
+
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { url, data = null, method = 'get', headers, responseType, timeout, cancelToken } = config
+    const { url, data = null, method = 'get', headers, responseType, timeout, cancelToken,
+    withCredentials,
+    xsrfHeaderName,
+    xsrfCookieName
+  } = config
 
     const request = new XMLHttpRequest()
     /** 设置 */
@@ -13,6 +21,10 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     }
     if (timeout) {
       request.timeout = timeout
+    }
+
+    if (withCredentials) {
+      request.withCredentials = withCredentials
     }
 
     /** 开启 */
@@ -48,6 +60,13 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     }
 
     /** 设置headers */
+    if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName) {
+      const xsrfValue = Cookie.read(xsrfCookieName)
+      if (xsrfValue && xsrfHeaderName) {
+        headers[xsrfHeaderName] = xsrfValue
+      }
+    }
+
     Object.keys(headers).forEach(name => {
       if (data === null && name.toLowerCase() === 'content-type') {
         delete headers[name]
