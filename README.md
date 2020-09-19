@@ -1,2 +1,8 @@
-# ts-axios
-使用typescript实现axios
+# 简介
+学习项目，跟随慕课网的教程，使用typescript实现axios功能
+
+# 提供的功能
+与官方axios一致
+
+# 注意
+不建议在项目开发中使用，可作为学习项目参考
