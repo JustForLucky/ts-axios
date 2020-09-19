@@ -25,9 +25,10 @@ export function parseHeaders(headers: string): any {
   let parsed = Object.create(null)
   if (!headers) return {}
   headers.split('\r\n').forEach(line => {
-    let [key, value] = line.split(':')
+    let [key, ...vals] = line.split(':')
     key = key.trim().toLowerCase()
     if (!key) return
+    let value = vals.join(':')
     if (value) {
       value = value.trim()
     }
@@ -36,7 +37,7 @@ export function parseHeaders(headers: string): any {
   return parsed
 }
 
-export function flatternHeaders(headers: any, method: Method):any {
+export function flatternHeaders(headers: any, method: Method): any {
   if (!headers) return headers
   headers = deepMerge(headers.common, headers[method], headers)
 

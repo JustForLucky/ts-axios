@@ -1,8 +1,10 @@
 import {
-  AxiosRequestConfig, AxiosPromise,
+  AxiosRequestConfig,
+  AxiosPromise,
   Method,
   AxiosResponse,
-  ResolvedFn, RejectedFn
+  ResolvedFn,
+  RejectedFn
 } from '../types'
 import InterceptorManager from './InterceptorManager'
 import dispatchRequest, { transformURL } from './dispatchRequest'
@@ -36,12 +38,16 @@ export default class Axios {
       config = url
     }
     config = mergeConfig(this.defaults, config)
-    const chain: PromiseChain<any>[] = [{
-      resolved: dispatchRequest,
-      rejected: undefined
-    }]
+    config.method = config.method.toLowerCase()
+
+    const chain: PromiseChain<any>[] = [
+      {
+        resolved: dispatchRequest,
+        rejected: undefined
+      }
+    ]
     this.interceptors.request.forEach(interceptor => {
-      chain.unshift(interceptor);
+      chain.unshift(interceptor)
     })
     this.interceptors.response.forEach(interceptor => {
       chain.push(interceptor)

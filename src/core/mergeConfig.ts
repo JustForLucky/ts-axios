@@ -1,5 +1,5 @@
-import { AxiosRequestConfig } from "../types";
-import { isPlainObject, deepMerge } from "../helpers/utils";
+import { AxiosRequestConfig } from '../types'
+import { isPlainObject, deepMerge } from '../helpers/utils'
 
 const strats = Object.create(null)
 
@@ -21,7 +21,7 @@ function deepMergeStrat(val1: any, val2: any): any {
   } else if (isPlainObject(val1)) {
     // deepMerge 为了获得val1的副本
     return deepMerge(val1)
-  } else if (typeof val1 !== undefined) {
+  } else {
     return val1
   }
 }
@@ -36,17 +36,20 @@ stratKeysDeepMerge.forEach(key => {
   strats[key] = deepMergeStrat
 })
 
-export default function mergeConfig(config1: AxiosRequestConfig, config2?: AxiosRequestConfig): AxiosRequestConfig {
+export default function mergeConfig(
+  config1: AxiosRequestConfig,
+  config2?: AxiosRequestConfig
+): AxiosRequestConfig {
   if (!config2) {
     config2 = {}
   }
   const config = Object.create(null)
 
-  for(let key in config2) {
+  for (let key in config2) {
     mergeField(key)
   }
 
-  for(let key in config1) {
+  for (let key in config1) {
     if (!config2[key]) {
       mergeField(key)
     }
